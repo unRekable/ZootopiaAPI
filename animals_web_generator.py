@@ -5,19 +5,12 @@ merges the data into the template, and saves the result as an HTML file.
 
 import json, requests
 from typing import Any, Dict, List
+from data_fetcher import fetch_data
 
 # Constants for filenames
 ANIMALS_DATA_FILE = 'data/animals_data.json'
 ANIMALS_TEMPLATE_FILE = 'template/animals_template.html'
 OUTPUT_HTML_FILE = 'animals.html'
-
-API_KEY = 'SECRET'
-ANIMALS_API_URL = 'https://api.api-ninjas.com/v1/animals?name='
-
-
-def get_animals_from_api(user_prompt: str) -> List[Dict[str, Any]]:
-    resp = requests.get(ANIMALS_API_URL + user_prompt, headers={'X-Api-Key': API_KEY})
-    return resp.json()
 
 def serialize_animal(animal_obj: Dict[str, Any]) -> str:
     """
@@ -111,9 +104,9 @@ def main() -> None:
     """
     #animals_data = load_data(ANIMALS_DATA_FILE)
 
-    user_prompt = input('Enter a name of an animal: ')
+    animal_name = input('Enter a name of an animal: ')
 
-    animals_data = get_animals_from_api(user_prompt)
+    animals_data = fetch_data(animal_name)
     print(animals_data)
 
     if not animals_data:
