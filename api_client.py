@@ -26,5 +26,24 @@ def fetch_data(animal_name: str) -> List[Dict[str, Any]]:
     },
     """
 
-    resp = requests.get(ANIMALS_API_URL + animal_name, headers={'X-Api-Key': API_KEY})
-    return resp.json()
+    if not API_KEY:
+        print("ERROR: API_KEY is not configured. Please set it in your .env file.")
+        return []
+
+    if not animal_name or not animal_name.strip():
+        print("ERROR: Animal name cannot be empty.")
+        return []
+
+    res = requests.get(ANIMALS_API_URL + animal_name, headers={'X-Api-Key': API_KEY})
+    return res.json()
+
+
+
+
+
+
+
+
+
+
+

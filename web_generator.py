@@ -4,12 +4,6 @@ merges the data into the template, and saves the result as an HTML file.
 """
 
 from typing import Any, Dict, List
-from data_fetcher import fetch_data
-
-# Constants for filenames
-ANIMALS_DATA_FILE = 'data/animals_data.json'
-ANIMALS_TEMPLATE_FILE = 'template/animals_template.html'
-OUTPUT_HTML_FILE = 'animals.html'
 
 def serialize_animal(animal_obj: Dict[str, Any]) -> str:
     """
@@ -94,37 +88,3 @@ def generate_html_file(template_filepath: str, animals_html_content: str, output
     except IOError:
         print(f"Error: Could not write the file {output_filepath}.")
         return False
-
-
-def main() -> None:
-    """
-    Main function of the script.
-    Loads data, processes it, and writes the output HTML file.
-    """
-    #animals_data = load_data(ANIMALS_DATA_FILE)
-
-    animal_name = input('Enter a name of an animal: ')
-
-    animals_data = fetch_data(animal_name)
-    print(animals_data)
-
-    if not animals_data:
-        print(f"The script will terminate, the animal {user_prompt} was not found.")
-        generate_html_file(ANIMALS_TEMPLATE_FILE, f"<h2>The animal '{user_prompt}' doesn't exist.</h2>", OUTPUT_HTML_FILE)
-        return
-
-    if not isinstance(animals_data, list):
-        print(f"Warning: Expected a list of animals, but got {type(animals_data)}. Cannot process.")
-        print("The script will terminate.")
-        return
-
-    all_animals_html_str = build_all_animals_html(animals_data)
-
-    success = generate_html_file(ANIMALS_TEMPLATE_FILE, all_animals_html_str, OUTPUT_HTML_FILE)
-
-    if not success:
-        print("The script terminated due to an error generating the HTML file.")
-
-
-if __name__ == "__main__":
-    main()
