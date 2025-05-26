@@ -3,7 +3,6 @@ This script loads animal data from a JSON file and an HTML template,
 merges the data into the template, and saves the result as an HTML file.
 """
 
-import json, requests
 from typing import Any, Dict, List
 from data_fetcher import fetch_data
 
