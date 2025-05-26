@@ -3,7 +3,7 @@ This script loads animal data from a JSON file and an HTML template,
 merges the data into the template, and saves the result as an HTML file.
 """
 
-import json
+import json, requests
 from typing import Any, Dict, List
 
 # Constants for filenames
@@ -11,28 +11,13 @@ ANIMALS_DATA_FILE = 'data/animals_data.json'
 ANIMALS_TEMPLATE_FILE = 'template/animals_template.html'
 OUTPUT_HTML_FILE = 'animals.html'
 
+API_KEY = 'SECRET'
+ANIMALS_API_URL = 'https://api.api-ninjas.com/v1/animals?name='
 
-def load_data(file_path: str) -> Any:
-    """
-    Loads data from a JSON file.
 
-    Args:
-        file_path (str): The path to the JSON file.
-
-    Returns:
-        Any: The data loaded from the JSON file (typically a dict or list).
-             Returns None if an error occurs during loading.
-    """
-    try:
-        with open(file_path, "r", encoding="utf-8") as handle:
-            return json.load(handle)
-    except FileNotFoundError:
-        print(f"Error: The file {file_path} was not found.")
-        return None
-    except json.JSONDecodeError:
-        print(f"Error: The file {file_path} does not contain valid JSON.")
-        return None
-
+def get_animals_from_api(user_prompt: str) -> List[Dict[str, Any]]:
+    resp = requests.get(ANIMALS_API_URL + user_prompt, headers={'X-Api-Key': API_KEY})
+    return resp.json()
 
 def serialize_animal(animal_obj: Dict[str, Any]) -> str:
     """
@@ -124,10 +109,16 @@ def main() -> None:
     Main function of the script.
     Loads data, processes it, and writes the output HTML file.
     """
-    animals_data = load_data(ANIMALS_DATA_FILE)
+    #animals_data = load_data(ANIMALS_DATA_FILE)
 
-    if animals_data is None:
-        print("The script will terminate due to an error loading animal data.")
+    user_prompt = input('Enter a name of an animal: ')
+
+    animals_data = get_animals_from_api(user_prompt)
+    print(animals_data)
+
+    if not animals_data:
+        print(f"The script will terminate, the animal {user_prompt} was not found.")
+        generate_html_file(ANIMALS_TEMPLATE_FILE, f"<h2>The animal '{user_prompt}' doesn't exist.</h2>", OUTPUT_HTML_FILE)
         return
 
     if not isinstance(animals_data, list):
